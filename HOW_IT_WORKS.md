@@ -168,10 +168,10 @@ Enter the tracking ID (e.g. `CIV0000003`) to see:
 
 **Issue Table (sorted by Priority Score, highest first):**
 
-| ID | Category | Location | Severity | Priority | Score | Status | Date |
-|----|----------|----------|----------|----------|-------|--------|------|
-| CIV0000003 | Flooding / Drain | MG Road | High | 🔴 Critical | 13 | In Progress | 2026-09-05 |
-| CIV0000001 | Road Damage | MG Road | High | 🟠 High | 9 | Pending | 2026-09-05 |
+| ID | Category | Location | Severity | Priority | Score | Authenticity | Status | Date |
+|----|----------|----------|----------|----------|-------|--------------|--------|------|
+| CIV0000003 | Flooding / Drain | MG Road | High | 🔴 Critical | 13 | High (Photo) | In Progress | 2026-09-05 |
+| CIV0000001 | Road Damage | MG Road | High | 🟠 High | 9 | Low | Pending | 2026-09-05 |
 | ...
 
 ---
@@ -315,6 +315,17 @@ The pothole (score 10) appears **above** the streetlight (score 4) in the author
 | Old issues getting ignored | Recurrence bonus keeps increasing as more people report the same area |
 | All issues looking the same | Category weight differentiates road damage (safety) from minor issues |
 | Manual triage taking time | Dashboard auto-sorts by score — authority just works top-to-bottom |
+
+---
+
+## Authenticity Ranking
+
+To help authorities verify issues faster, the system includes an **Authenticity** metric.
+This is currently determined by the presence of photographic evidence:
+- **High (Photo Attached)**: The citizen provided visual proof of the issue.
+- **Low (No Photo)**: The report is text-only and unverified.
+
+This field is visible on the authority dashboard, issue detail page, and citizen tracking page.
 
 ---
 

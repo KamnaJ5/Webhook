@@ -161,7 +161,9 @@ def admin_login():
             session['admin_logged_in'] = True
             session['admin_user'] = username
             flash(f'Welcome, {username}!', 'success')
-            next_page = request.args.get('next', url_for('admin'))
+            next_page = request.args.get('next')
+            if not next_page:
+                next_page = url_for('admin')
             return redirect(next_page)
         flash('Invalid username or password.', 'error')
     return render_template('login.html')

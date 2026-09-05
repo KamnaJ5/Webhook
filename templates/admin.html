@@ -62,6 +62,7 @@
         <th>Severity</th>
         <th>Priority</th>
         <th>Score</th>
+        <th>Authenticity</th>
         <th>Status</th>
         <th>Reported</th>
         <th>Action</th>
@@ -76,6 +77,7 @@
         <td><span class="sev-badge sev-{{ issue.severity | lower }}">{{ issue.severity }}</span></td>
         <td><span class="badge badge-priority-{{ issue.priority_label | lower }}">{{ issue.priority_label }}</span></td>
         <td class="score-cell">{{ issue.priority_score }}</td>
+        <td><span class="badge {{ 'badge-resolved' if issue.photo else 'badge-pending' }}">{{ 'High (Photo)' if issue.photo else 'Low' }}</span></td>
         <td><span class="badge badge-{{ issue.status | lower | replace(' ','_') }}">{{ issue.status }}</span></td>
         <td class="date-cell">{{ issue.created_at[:10] }}</td>
         <td><a href="{{ url_for('admin_issue', issue_id=issue.id) }}" class="btn btn-sm">View</a></td>

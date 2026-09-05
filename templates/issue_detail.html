@@ -26,6 +26,7 @@
         {% if issue.phone %}<div class="detail-item"><span class="label">Phone</span><span>{{ issue.phone }}</span></div>{% endif %}
         <div class="detail-item"><span class="label">Category</span><span>{{ issue.category }}</span></div>
         <div class="detail-item"><span class="label">Severity</span><span>{{ issue.severity }}</span></div>
+        <div class="detail-item"><span class="label">Authenticity</span><span>{{ 'High (Photo Attached)' if issue.photo else 'Low (No Photo)' }}</span></div>
         <div class="detail-item"><span class="label">Location</span><span>{{ issue.location }}</span></div>
         {% if issue.assigned_to %}<div class="detail-item"><span class="label">Assigned To</span><span>{{ issue.assigned_to }}</span></div>{% endif %}
       </div>
