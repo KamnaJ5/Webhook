@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Smart Civic Issue Reporting</h1>
+  <p class="hero-sub">Report local problems. Track resolution. Hold authorities accountable.</p>
+  <div class="hero-cards">
+    <a class="card-link" href="{{ url_for('report') }}">
+      <div class="card card-citizen">
+        <div class="card-icon">📋</div>
+        <h2>Report an Issue</h2>
+        <p>Damaged road, broken streetlight, garbage overflow — report it in 60 seconds.</p>
+        <span class="btn btn-primary">Report Now →</span>
+      </div>
+    </a>
+    <a class="card-link" href="{{ url_for('track') }}">
+      <div class="card card-track">
+        <div class="card-icon">🔍</div>
+        <h2>Track Your Issue</h2>
+        <p>Enter your tracking ID to see real-time status and authority updates.</p>
+        <span class="btn btn-outline">Check Status →</span>
+      </div>
+    </a>
+    <a class="card-link" href="{{ url_for('admin') }}">
+      <div class="card card-admin">
+        <div class="card-icon">🏛</div>
+        <h2>Authority Dashboard</h2>
+        <p>Triage, assign, and resolve issues. View priority queue and analytics.</p>
+        <span class="btn btn-outline">Open Dashboard →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="how-it-works">
+  <h2>How It Works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <strong>Citizen Reports</strong>
+        <p>Fill a quick form — category, severity, location, optional photo.</p>
+      </div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <strong>Auto-Prioritized</strong>
+        <p>System scores issues by severity, category weight &amp; recurrence.</p>
+      </div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <strong>Authority Acts</strong>
+        <p>Officials assign, update status, and add resolution notes.</p>
+      </div>
+    </div>
+    <div class="step-arrow">→</div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <strong>Citizen Tracks</strong>
+        <p>Citizen checks live status using their unique tracking ID.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

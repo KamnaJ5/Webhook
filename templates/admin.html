@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Authority Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Authority Dashboard</h1>
+  <p>Issues ranked by priority score — act on critical items first.</p>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">{{ stats.total }}</span>
+    <span class="stat-label">Total</span>
+  </div>
+  <div class="stat-item stat-pending">
+    <span class="stat-num">{{ stats.pending }}</span>
+    <span class="stat-label">Pending</span>
+  </div>
+  <div class="stat-item stat-progress">
+    <span class="stat-num">{{ stats.progress }}</span>
+    <span class="stat-label">In Progress</span>
+  </div>
+  <div class="stat-item stat-resolved">
+    <span class="stat-num">{{ stats.resolved }}</span>
+    <span class="stat-label">Resolved</span>
+  </div>
+</div>
+
+<!-- Filters -->
+<form class="filter-bar" method="GET" action="{{ url_for('admin') }}">
+  <select name="status">
+    <option value="">All Statuses</option>
+    {% for s in ['Pending','In Progress','Resolved','Closed'] %}
+    <option {{ 'selected' if status_filter==s }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <select name="category">
+    <option value="">All Categories</option>
+    {% for c in ['Road Damage','Flooding / Drain','Power Outage','Water Leakage','Garbage Overflow','Broken Streetlight','Other'] %}
+    <option {{ 'selected' if category_filter==c }}>{{ c }}</option>
+    {% endfor %}
+  </select>
+  <select name="priority">
+    <option value="">All Priorities</option>
+    {% for p in ['Critical','High','Medium','Low'] %}
+    <option {{ 'selected' if priority_filter==p }}>{{ p }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="{{ url_for('admin') }}" class="btn btn-outline">Reset</a>
+</form>
+
+<!-- Issue Table -->
+{% if issues %}
+<div class="table-wrap">
+  <table class="issue-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Category</th>
+        <th>Location</th>
+        <th>Severity</th>
+        <th>Priority</th>
+        <th>Score</th>
+        <th>Status</th>
+        <th>Reported</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for issue in issues %}
+      <tr>
+        <td class="mono">{{ issue.id }}</td>
+        <td>{{ issue.category }}</td>
+        <td class="loc-cell">{{ issue.location }}</td>
+        <td><span class="sev-badge sev-{{ issue.severity | lower }}">{{ issue.severity }}</span></td>
+        <td><span class="badge badge-priority-{{ issue.priority_label | lower }}">{{ issue.priority_label }}</span></td>
+        <td class="score-cell">{{ issue.priority_score }}</td>
+        <td><span class="badge badge-{{ issue.status | lower | replace(' ','_') }}">{{ issue.status }}</span></td>
+        <td class="date-cell">{{ issue.created_at[:10] }}</td>
+        <td><a href="{{ url_for('admin_issue', issue_id=issue.id) }}" class="btn btn-sm">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">No issues found matching filters.</div>
+{% endif %}
+{% endblock %}

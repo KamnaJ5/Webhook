@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Issue {{ issue.id }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('admin') }}" class="back-link">← Back to Dashboard</a>
+  <h1>Issue Detail</h1>
+</div>
+
+<div class="detail-layout">
+  <!-- Left: Issue Info -->
+  <div class="detail-main">
+    <div class="issue-card">
+      <div class="issue-card-header">
+        <div>
+          <span class="issue-id">{{ issue.id }}</span>
+          <span class="badge badge-{{ issue.status | lower | replace(' ','_') }}">{{ issue.status }}</span>
+          <span class="badge badge-priority-{{ issue.priority_label | lower }}">
+            {{ issue.priority_label }} Priority (Score: {{ issue.priority_score }})
+          </span>
+        </div>
+        <div class="issue-meta">Reported: {{ issue.created_at }}</div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item"><span class="label">Reporter</span><span>{{ issue.name }}</span></div>
+        {% if issue.phone %}<div class="detail-item"><span class="label">Phone</span><span>{{ issue.phone }}</span></div>{% endif %}
+        <div class="detail-item"><span class="label">Category</span><span>{{ issue.category }}</span></div>
+        <div class="detail-item"><span class="label">Severity</span><span>{{ issue.severity }}</span></div>
+        <div class="detail-item"><span class="label">Location</span><span>{{ issue.location }}</span></div>
+        {% if issue.assigned_to %}<div class="detail-item"><span class="label">Assigned To</span><span>{{ issue.assigned_to }}</span></div>{% endif %}
+      </div>
+
+      <div class="detail-section">
+        <span class="label">Description</span>
+        <p>{{ issue.description }}</p>
+      </div>
+
+      {% if issue.photo %}
+      <div class="detail-section">
+        <span class="label">Photo Evidence</span>
+        <img src="{{ url_for('static', filename='uploads/' + issue.photo) }}"
+             alt="Issue photo" class="issue-photo"/>
+      </div>
+      {% endif %}
+
+      {% if issue.admin_notes %}
+      <div class="detail-section authority-notes">
+        <span class="label">Current Authority Notes</span>
+        <p>{{ issue.admin_notes }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Right: Update Panel -->
+  <div class="detail-sidebar">
+    <div class="update-card">
+      <h2>Update Issue</h2>
+      <form method="POST">
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" name="status" required>
+            {% for s in ['Pending','In Progress','Resolved','Closed'] %}
+            <option {{ 'selected' if issue.status==s }}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="assigned_to">Assign To</label>
+          <input type="text" id="assigned_to" name="assigned_to"
+                 value="{{ issue.assigned_to or '' }}"
+                 placeholder="Official name / department"/>
+        </div>
+        <div class="form-group">
+          <label for="admin_notes">Authority Notes</label>
+          <textarea id="admin_notes" name="admin_notes" rows="4"
+                    placeholder="Update citizen on actions taken, expected resolution date…">{{ issue.admin_notes or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Save Update →</button>
+      </form>
+    </div>
+
+    <!-- Priority Explanation -->
+    <div class="priority-box">
+      <h3>Priority Scoring</h3>
+      <div class="priority-row"><span>Category weight</span>
+        <span class="score-val">+{{ {'Road Damage':5,'Flooding / Drain':5,'Power Outage':4,'Water Leakage':4,'Garbage Overflow':3,'Broken Streetlight':3}.get(issue.category, 2) }}</span>
+      </div>
+      <div class="priority-row"><span>Severity weight</span>
+        <span class="score-val">+{{ {'High':3,'Medium':2,'Low':1}.get(issue.severity, 1) }}</span>
+      </div>
+      <div class="priority-row"><span>Recurrence bonus</span>
+        <span class="score-val">+{{ issue.priority_score - ({'Road Damage':5,'Flooding / Drain':5,'Power Outage':4,'Water Leakage':4,'Garbage Overflow':3,'Broken Streetlight':3}.get(issue.category,2) + {'High':3,'Medium':2,'Low':1}.get(issue.severity,1)) }}</span>
+      </div>
+      <div class="priority-row total"><span>Total Score</span>
+        <span class="score-val">{{ issue.priority_score }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

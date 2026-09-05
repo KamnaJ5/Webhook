@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Analytics Dashboard</h1>
+  <p>Recurring hotspots, category breakdown, and resolution trends.</p>
+</div>
+
+<div class="analytics-grid">
+
+  <!-- Category Chart -->
+  <div class="chart-card">
+    <h2>Issues by Category</h2>
+    {% for row in cat_data %}
+    <div class="bar-row">
+      <span class="bar-label">{{ row.category }}</span>
+      <div class="bar-track">
+        <div class="bar-fill"
+             style="width: {{ (row.cnt / (cat_data[0].cnt or 1) * 100) | int }}%"></div>
+      </div>
+      <span class="bar-num">{{ row.cnt }}</span>
+    </div>
+    {% else %}
+    <p class="no-data">No data yet.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Status Donut (CSS-only) -->
+  <div class="chart-card">
+    <h2>Resolution Status</h2>
+    <div class="status-pills">
+      {% for row in status_data %}
+      <div class="status-pill">
+        <span class="pill-dot dot-{{ row.status | lower | replace(' ','_') }}"></span>
+        <span>{{ row.status }}</span>
+        <strong>{{ row.cnt }}</strong>
+      </div>
+      {% else %}
+      <p class="no-data">No data yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Priority Breakdown -->
+  <div class="chart-card">
+    <h2>Priority Distribution</h2>
+    {% for row in priority_data %}
+    <div class="priority-dist-row">
+      <span class="badge badge-priority-{{ row.priority_label | lower }}">{{ row.priority_label }}</span>
+      <div class="bar-track">
+        <div class="bar-fill bar-priority-{{ row.priority_label | lower }}"
+             style="width: {{ (row.cnt / ([p.cnt for p in priority_data]|max or 1) * 100) | int }}%"></div>
+      </div>
+      <span class="bar-num">{{ row.cnt }}</span>
+    </div>
+    {% else %}
+    <p class="no-data">No data yet.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Top Locations (Hotspots) -->
+  <div class="chart-card">
+    <h2>Top Hotspot Locations</h2>
+    <ol class="hotspot-list">
+      {% for row in location_data %}
+      <li>
+        <span class="hotspot-loc">{{ row.location[:50] }}{% if row.location|length > 50 %}…{% endif %}</span>
+        <span class="hotspot-cnt">{{ row.cnt }} report{{ 's' if row.cnt != 1 }}</span>
+      </li>
+      {% else %}
+      <li class="no-data">No data yet.</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <!-- Recent Trend -->
+  <div class="chart-card chart-wide">
+    <h2>Daily Reports (Last 7 Days)</h2>
+    {% if trend_data %}
+    <div class="trend-bars">
+      {% set max_cnt = trend_data | map(attribute='cnt') | max %}
+      {% for row in trend_data | reverse %}
+      <div class="trend-col">
+        <div class="trend-bar" style="height: {{ (row.cnt / (max_cnt or 1) * 100) | int }}%"></div>
+        <span class="trend-label">{{ row.day[5:] }}</span>
+        <span class="trend-num">{{ row.cnt }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-data">No trend data yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Track Issue{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Track Your Issue</h1>
+  <p>Enter the tracking ID you received when you submitted your report.</p>
+</div>
+
+<form class="search-bar" method="GET" action="{{ url_for('track') }}">
+  <input type="text" name="issue_id" value="{{ issue_id }}"
+         placeholder="e.g. CIV3A7F2B1C" style="text-transform:uppercase"/>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if issue %}
+<div class="issue-card">
+  <div class="issue-card-header">
+    <div>
+      <span class="issue-id">{{ issue.id }}</span>
+      <span class="badge badge-{{ issue.status | lower | replace(' ','_') }}">{{ issue.status }}</span>
+      <span class="badge badge-priority-{{ issue.priority_label | lower }}">{{ issue.priority_label }} Priority</span>
+    </div>
+    <div class="issue-meta">Reported: {{ issue.created_at }}</div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-item"><span class="label">Category</span><span>{{ issue.category }}</span></div>
+    <div class="detail-item"><span class="label">Severity</span><span>{{ issue.severity }}</span></div>
+    <div class="detail-item"><span class="label">Location</span><span>{{ issue.location }}</span></div>
+    <div class="detail-item"><span class="label">Reported By</span><span>{{ issue.name }}</span></div>
+    {% if issue.assigned_to %}
+    <div class="detail-item"><span class="label">Assigned To</span><span>{{ issue.assigned_to }}</span></div>
+    {% endif %}
+    <div class="detail-item"><span class="label">Last Updated</span><span>{{ issue.updated_at }}</span></div>
+  </div>
+
+  <div class="detail-section">
+    <span class="label">Description</span>
+    <p>{{ issue.description }}</p>
+  </div>
+
+  {% if issue.admin_notes %}
+  <div class="detail-section authority-notes">
+    <span class="label">Authority Notes</span>
+    <p>{{ issue.admin_notes }}</p>
+  </div>
+  {% endif %}
+
+  {% if issue.photo %}
+  <div class="detail-section">
+    <span class="label">Submitted Photo</span>
+    <img src="{{ url_for('static', filename='uploads/' + issue.photo) }}"
+         alt="Issue photo" class="issue-photo"/>
+  </div>
+  {% endif %}
+
+  <!-- Status Timeline -->
+  <div class="timeline">
+    <div class="tl-step {{ 'active' if issue.status in ['Pending','In Progress','Resolved'] }}">
+      <div class="tl-dot"></div><span>Submitted</span>
+    </div>
+    <div class="tl-line"></div>
+    <div class="tl-step {{ 'active' if issue.status in ['In Progress','Resolved'] }}">
+      <div class="tl-dot"></div><span>In Progress</span>
+    </div>
+    <div class="tl-line"></div>
+    <div class="tl-step {{ 'active' if issue.status == 'Resolved' }}">
+      <div class="tl-dot"></div><span>Resolved</span>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
