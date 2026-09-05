@@ -34,6 +34,30 @@ img { max-width: 100%; border-radius: var(--radius); }
 .nav-links { display: flex; gap: 1.5rem; }
 .nav-links a { color: var(--muted); font-size: 0.9rem; padding: 4px 0; }
 .nav-links a:hover { color: var(--primary); }
+.nav-user { font-size: .82rem; color: var(--primary); font-weight: 600;
+            background: #eff6ff; padding: 3px 10px; border-radius: 20px; }
+.nav-btn {
+  display: inline-block;
+  padding: .35rem .85rem !important;
+  border-radius: var(--radius);
+  font-size: .85rem !important;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  transition: all .2s;
+  color: var(--text) !important;
+}
+.nav-btn:hover {
+  background: var(--bg);
+}
+.nav-btn-primary {
+  background: var(--primary);
+  color: #fff !important;
+  border-color: var(--primary);
+}
+.nav-btn-primary:hover {
+  background: var(--primary-h);
+}
 
 /* ── Flash ───────────────────────────────── */
 .flash-container { padding: 0 2rem; margin-top: .75rem; }
@@ -243,7 +267,25 @@ img { max-width: 100%; border-radius: var(--radius); }
 .trend-num   { font-size: .7rem; font-weight: 700; }
 .no-data { color: var(--muted); font-size: .85rem; }
 
-/* ── Responsive ──────────────────────────── */
+/* ── Login Page ──────────────────────────── */
+.login-wrap { display: flex; justify-content: center; padding: 2rem 1rem; }
+.login-card { background: var(--surface); border: 1px solid var(--border);
+              border-radius: 12px; padding: 2rem; width: 100%; max-width: 420px; text-align: center; }
+.login-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+.login-card h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: .25rem; }
+.login-sub { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+.login-card .form-group { text-align: left; }
+
+.demo-creds { margin-top: 1.5rem; background: var(--bg); border: 1px dashed var(--border);
+              border-radius: var(--radius); padding: .85rem 1rem; text-align: left; display: none; }
+.demo-title { font-size: .8rem; font-weight: 700; color: var(--muted);
+              text-transform: uppercase; letter-spacing: .05em; margin-bottom: .5rem; }
+.cred-row { display: flex; align-items: center; gap: .5rem; font-size: .82rem; flex-wrap: wrap; }
+.cred-label { color: var(--muted); }
+.cred-row code { background: #fff; border: 1px solid var(--border); border-radius: 4px;
+                 padding: 1px 6px; font-size: .82rem; color: var(--primary); font-weight: 600; }
+.cred-sep { color: var(--border); }
+
 @media (max-width: 768px) {
   .form-row { flex-direction: column; }
   .detail-layout { flex-direction: column; }

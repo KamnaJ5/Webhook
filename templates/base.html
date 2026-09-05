@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}CivicAlert{% endblock %} — Smart Civic Issue System</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}NagarSetu{% endblock %} — Smart Civic Issue System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
+
 <body>
-<nav class="navbar">
-  <a class="nav-brand" href="{{ url_for('home') }}">🏙 CivicAlert</a>
-  <div class="nav-links">
-    <a href="{{ url_for('report') }}">Report Issue</a>
-    <a href="{{ url_for('track') }}">Track Issue</a>
-    <a href="{{ url_for('admin') }}">Authority</a>
-    <a href="{{ url_for('analytics') }}">Analytics</a>
-  </div>
-</nav>
+  <nav class="navbar">
+    <a class="nav-brand" href="{{ url_for('home') }}">🏙 NagarSetu</a>
+    <div class="nav-links">
+      <a href="{{ url_for('report') }}">Report Issue</a>
+      <a href="{{ url_for('track') }}">Track Issue</a>
+      {% if session.get('admin_logged_in') %}
+      <a href="{{ url_for('admin') }}">Dashboard</a>
+      <a href="{{ url_for('analytics') }}">Analytics</a>
+      <span class="nav-user">👤 {{ session.get('admin_user') }}</span>
+      <a href="{{ url_for('admin_logout') }}" class="nav-btn">Logout</a>
+      {% else %}
+      <a href="{{ url_for('admin_login') }}" class="nav-btn nav-btn-primary">Authority Login</a>
+      {% endif %}
+    </div>
+  </nav>
 
-<div class="flash-container">
-  {% with messages = get_flashed_messages(with_categories=true) %}
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
-      <div class="flash flash-{{ category }}">{{ message }}</div>
+    <div class="flash flash-{{ category }}">{{ message }}</div>
     {% endfor %}
-  {% endwith %}
-</div>
+    {% endwith %}
+  </div>
 
-<main class="main-content">
-  {% block content %}{% endblock %}
-</main>
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
 
-<footer class="footer">
-  <p>CivicAlert &mdash; PS 03.1 Smart Civic Issue Reporting & Resolution</p>
-</footer>
+  <footer class="footer">
+    <p>CivicAlert &mdash; PS 03.1 Smart Civic Issue Reporting & Resolution</p>
+  </footer>
 </body>
+
 </html>

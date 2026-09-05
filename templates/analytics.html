@@ -44,12 +44,14 @@
   <!-- Priority Breakdown -->
   <div class="chart-card">
     <h2>Priority Distribution</h2>
+    {% set max_p = namespace(val=1) %}
+    {% for row in priority_data %}{% if row.cnt > max_p.val %}{% set max_p.val = row.cnt %}{% endif %}{% endfor %}
     {% for row in priority_data %}
     <div class="priority-dist-row">
       <span class="badge badge-priority-{{ row.priority_label | lower }}">{{ row.priority_label }}</span>
       <div class="bar-track">
         <div class="bar-fill bar-priority-{{ row.priority_label | lower }}"
-             style="width: {{ (row.cnt / ([p.cnt for p in priority_data]|max or 1) * 100) | int }}%"></div>
+             style="width: {{ (row.cnt / max_p.val * 100) | int }}%"></div>
       </div>
       <span class="bar-num">{{ row.cnt }}</span>
     </div>

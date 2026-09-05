@@ -1,10 +1,28 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from functools import wraps
 import sqlite3, os, uuid
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'civic_secret_2024'
+
+# ─── Admin Credentials ──────────────────────────────────────────────
+# Demo accounts for presentation. Change before deploying to production.
+ADMIN_USERS = {
+    'admin':     'civic2024',     # primary admin
+    'authority': 'hackathon',     # second demo account
+}
+
+def login_required(f):
+    """Decorator — redirects to /admin/login if not authenticated."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('admin_logged_in'):
+            flash('Please log in to access the authority dashboard.', 'error')
+            return redirect(url_for('admin_login', next=request.path))
+        return f(*args, **kwargs)
+    return decorated
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
@@ -131,8 +149,32 @@ def track():
             flash('No issue found with that ID.', 'error')
     return render_template('track.html', issue=issue, issue_id=issue_id)
 
+# ─── Auth Routes ────────────────────────────────────────────────────
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('admin_logged_in'):
+        return redirect(url_for('admin'))
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        if ADMIN_USERS.get(username) == password:
+            session['admin_logged_in'] = True
+            session['admin_user'] = username
+            flash(f'Welcome, {username}!', 'success')
+            next_page = request.args.get('next', url_for('admin'))
+            return redirect(next_page)
+        flash('Invalid username or password.', 'error')
+    return render_template('login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.clear()
+    flash('Logged out successfully.', 'success')
+    return redirect(url_for('home'))
+
 # ─── Authority Routes ────────────────────────────────────────────────
 @app.route('/admin')
+@login_required
 def admin():
     conn = get_db()
     status_filter   = request.args.get('status', '')
@@ -165,6 +207,7 @@ def admin():
                            priority_filter=priority_filter)
 
 @app.route('/admin/issue/<issue_id>', methods=['GET', 'POST'])
+@login_required
 def admin_issue(issue_id):
     conn = get_db()
     if request.method == 'POST':
@@ -188,6 +231,7 @@ def admin_issue(issue_id):
     return render_template('issue_detail.html', issue=issue)
 
 @app.route('/analytics')
+@login_required
 def analytics():
     conn = get_db()
     # Category breakdown
@@ -259,4 +303,4 @@ def seed_db():
 if __name__ == '__main__':
     init_db()
     seed_db()
-    app.run(host='0.0.0.0',debug=True,port='3000')
+    app.run(debug=True, port=5000)
